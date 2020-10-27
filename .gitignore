@@ -33,6 +33,9 @@ $RECYCLE.BIN/
 !.vscode/launch.json
 !.vscode/extensions.json
 *.code-workspace
+.project
+.vscode
+.settings
 
 ### Maven template
 target/
