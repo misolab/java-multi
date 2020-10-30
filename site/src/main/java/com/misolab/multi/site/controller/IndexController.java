@@ -1,6 +1,7 @@
 package com.misolab.multi.site.controller;
 
 import com.misolab.core.exception.BadRequestException;
+import com.misolab.core.util.LDAPAuthenticator;
 import com.misolab.core.vo.ApiResponse;
 import com.misolab.multi.domain.dao.MemberDao;
 import com.misolab.multi.domain.entity.Member;
@@ -55,4 +56,27 @@ public class IndexController {
 
         return "index";
     }
+
+
+    final LDAPAuthenticator ldap;
+
+    @ResponseBody
+    @GetMapping("/api/login")
+    public ResponseEntity login(@RequestParam String userId, @RequestParam String password) {
+//        http://localhost:8080/api/login?userId=riemann&password=password
+        
+//        boolean result = ldap.isSimpleLogin(userId, password);
+//        ApiResponse response = ApiResponse.of("result", result);
+
+        LDAPAuthenticator.Result result = ldap.login(userId, password);
+        if (result.isOk()) {
+            ApiResponse response = ApiResponse.of("result", true);
+            return ResponseEntity.ok(response);
+        }
+
+        ApiResponse response = new ApiResponse();
+        response.error(result.ordinal(), result.getMessage());
+        return ResponseEntity.ok(response);
+    }
+
 }

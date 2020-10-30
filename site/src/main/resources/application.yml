@@ -1,4 +1,9 @@
 
+
+ldap:
+  providerUrl: ldap://ldap.forumsys.com:389
+  principal: "uid=%s,dc=example,dc=com"
+
 ---
 spring.profiles: dev
 
