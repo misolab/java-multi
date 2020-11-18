@@ -1,5 +1,6 @@
 package com.misolab.multi.site.controller;
 
+import com.misolab.core.crypto.CipherTemplate;
 import com.misolab.core.exception.BadRequestException;
 import com.misolab.core.util.LDAPAuthenticator;
 import com.misolab.core.vo.ApiResponse;
@@ -12,17 +13,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
+
+
 @Controller
-@RequestMapping("/")
 public class IndexController {
 
     final MemberDao memberDao;
@@ -61,10 +60,10 @@ public class IndexController {
     final LDAPAuthenticator ldap;
 
     @ResponseBody
-    @GetMapping("/api/login")
+    @PostMapping("/api/login")
     public ResponseEntity login(@RequestParam String userId, @RequestParam String password) {
 //        http://localhost:8080/api/login?userId=riemann&password=password
-        
+
 //        boolean result = ldap.isSimpleLogin(userId, password);
 //        ApiResponse response = ApiResponse.of("result", result);
 
@@ -76,6 +75,19 @@ public class IndexController {
 
         ApiResponse response = new ApiResponse();
         response.error(result.ordinal(), result.getMessage());
+        return ResponseEntity.ok(response);
+    }
+
+    final CipherTemplate aes;
+
+    @ResponseBody
+    @GetMapping("/api/login")
+    public ResponseEntity token(@RequestParam String token) {
+//        http://localhost:8080/api/login?token=EvDhzhRj7cqPaJpq5JoJHg==
+
+        String encrypted = aes.decrypt(token);
+        ApiResponse response = ApiResponse.of("encrypted", encrypted);
+
         return ResponseEntity.ok(response);
     }
 
